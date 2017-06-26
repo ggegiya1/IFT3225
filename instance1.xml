@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="test.xsl"?>
+<bibliotheque>
+    <auteur ident="ID001">
+        <prenom>Mark</prenom>
+        <nom>Twain</nom>
+        <pays>USA</pays>
+        <commentaire>Mark Twain, de son vrai nom Samuel Langhorne Clemens, né le 30 novembre 1835 à Florida</commentaire>
+        <photo>https://upload.wikimedia.org/wikipedia/commons/2/25/Mark_Twain%2C_Brady-Handy_photo_portrait%2C_Feb_7%2C_1871%2C_cropped.jpg</photo>
+    </auteur>
+    <auteur ident="ID002">
+        <prenom>Mark</prenom>
+        <nom>Wain</nom>
+        <pays>USA</pays>
+        <commentaire>Mark Twain, de son vrai nom Samuel Langhorne Clemens, né le 30 novembre 1835 à Florida</commentaire>
+        <photo>https://upload.wikimedia.org/wikipedia/commons/2/25/Mark_Twain%2C_Brady-Handy_photo_portrait%2C_Feb_7%2C_1871%2C_cropped.jpg</photo>
+    </auteur>
+    <auteur ident="ID003">
+        <prenom>Ernest</prenom>
+        <nom>Hemingway</nom>
+        <pays>USA</pays>
+        <commentaire>Ernest Miller Hemingway (July 21, 1899 – July 2, 1961) was an American novelist, short story writer, and journalist.</commentaire>
+        <photo>http://www.nobelprize.org/nobel_prizes/literature/laureates/1954/hemingway.jpg</photo>
+    </auteur>
+    <livre langue="FR" auteurs="ID002 ID001">
+        <titre>Les Aventures de Tom Sawyer</titre>
+        <prix>
+            <valeur monnaie="CAD">10.5</valeur>
+        </prix>
+        <annee>1876</annee>
+        <couverture>http://www.oxygenxml.com/</couverture>
+        <film>http://www.oxygenxml.com/</film>
+        <commentaire>commentaire2</commentaire>
+    </livre>
+    <livre langue="EN" auteurs="ID001">
+        <titre>Life on the Mississippi</titre>
+        <prix>
+            <valeur monnaie="USD">10</valeur>
+        </prix>
+        <annee>1883</annee>
+        <couverture>http://www.oxygenxml.com/</couverture>
+        <film>http://www.oxygenxml.com/</film>
+        <commentaire>commentaire3</commentaire>
+    </livre>
+    <livre langue="EN" auteurs="ID003">
+        <titre>A Farewell to Arms</titre>
+        <prix>
+            <valeur monnaie="CAD">11.5</valeur>
+        </prix>
+        <annee>1929</annee>
+        <couverture>http://www.oxygenxml.com/</couverture>
+        <film>http://www.oxygenxml.com/</film>
+        <commentaire>commentaire2</commentaire>
+    </livre>
+    <livre langue="FR" auteurs="ID003">
+        <titre>The Old Man and the Sea</titre>
+        <prix>
+            <valeur monnaie="CAD">10.5</valeur>
+        </prix>
+        <annee>1952</annee>
+        <couverture>http://www.oxygenxml.com/</couverture>
+        <film>http://www.oxygenxml.com/</film>
+        <commentaire>commentaire2</commentaire>
+    </livre>
+</bibliotheque>

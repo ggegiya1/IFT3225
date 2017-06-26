@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+           xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" vc:minVersion="1.1"
+           xmlns:bibliotheque="http://tp1.com"
+           xmlns:targetNamespace="bibliotheque">
+
+    <xs:element name="bibliotheque">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="auteur" minOccurs="0" maxOccurs="unbounded" type="Auteur"/>
+                <xs:element name="livre" minOccurs="0" maxOccurs="unbounded" type="Livre"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="Auteur">
+        <xs:complexContent>
+            <xs:extension base="Personne">
+                <xs:sequence>    
+                    <xs:element name="pays" minOccurs="0" maxOccurs="1" type="xs:string"/>
+                    <xs:element name="commentaire" minOccurs="0" maxOccurs="1" type="xs:string"/>
+                    <xs:element name="photo" minOccurs="0" maxOccurs="1" type="xs:anyURI"/>
+                </xs:sequence>
+                <xs:attribute name="ident" type="xs:ID" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="Personne">
+        <xs:annotation>
+            <xs:documentation>
+                Le nom et le prénom (prenom) peuvent apparaitre dans n’importe quel ordre
+            </xs:documentation>
+        </xs:annotation>
+        <xs:choice>
+            <xs:sequence>
+                <xs:element name="nom" type="xs:string"/>
+                <xs:element name="prenom" type="xs:string"/>
+            </xs:sequence>
+            <xs:sequence>
+                <xs:element name="prenom" type="xs:string"/>
+                <xs:element name="nom" type="xs:string"/>
+            </xs:sequence>
+        </xs:choice>
+    </xs:complexType>
+    
+    <xs:complexType name="Livre">
+        <xs:annotation>
+            <xs:documentation>
+                chaque livre peut avoir les informations optionnelles suivantes: 
+                -la couverture du livre (couverture) sous forme d’un URL, 
+                -un film associé au livre (film) aussi sous forme d’URL et
+                -un commentaire sur le livre (commentaire).
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="titre" type="Titre"/>
+            <xs:element name="prix" type="Prix"/>
+            <xs:element name="annee" type="xs:gYear"/>
+            <xs:element name="couverture" minOccurs="0" type="xs:anyURI"/>
+            <xs:element name="film"  minOccurs="0" type="xs:anyURI"/>
+            <xs:element name="commentaire"  minOccurs="0" type="xs:string"/>
+        </xs:sequence>
+        <xs:attribute name="langue" type="Langue" use="required"/>
+        <xs:attribute name="auteurs" type="xs:IDREFS" use="required"/>
+    </xs:complexType>
+    
+
+    <xs:simpleType name="Titre">
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="50"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <xs:simpleType name="Langue">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="FR"/>
+            <xs:enumeration value="EN"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <xs:complexType name="Prix">
+        <xs:sequence>
+            <xs:element name="valeur" type="Valeur"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    
+    <xs:complexType name="Valeur">
+        <xs:simpleContent>
+            <xs:extension base="xs:float">
+                <xs:attribute name="monnaie" type="Monnaie" use="optional"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    
+    <xs:simpleType name="Monnaie">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="CAD"/>
+            <xs:enumeration value="USD"/>
+            <xs:enumeration value="EUR"/>
+            <xs:enumeration value="RUB"/>
+            <xs:enumeration value="GBP"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
+</xs:schema>

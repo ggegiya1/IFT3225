@@ -1,0 +1,28 @@
+datatypes xsd = "http://www.w3.org/2001/XMLSchema-datatypes"
+
+element bibliotheque { 
+     element auteur {
+        (element nom { text }
+        & element prenom { text }),
+        attribute ident { xsd:ID },
+        element pays {text}?,
+        element commentaire {text}?,
+        element photo {xsd:anyURI}?
+    }*,
+    element livre {
+        attribute langue { "EN" | "FR"},
+        attribute auteurs {xsd:IDREFS},
+        element titre {xsd:string {maxLength="50"}},
+        element prix {
+              element valeur {xsd:float,
+                             attribute monnaie { "USD" | "CAD" | "GBP" | "RUB"}?}
+        
+        },
+        element annee {xsd:gYear},
+        element couverture {xsd:anyURI}?,
+        element film {xsd:anyURI}?,
+        element commentaire {text}?
+        
+     }*
+}
+
