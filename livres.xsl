@@ -16,6 +16,7 @@
         <html>
             <head>
                 <meta charset="utf-8"></meta>
+                <link rel="stylesheet" type="text/css" href="xsl.css"/>
             </head>
             <body>                
                 <h1>Livres</h1>
@@ -32,7 +33,7 @@
     <xsl:template name="livres-template">
         <xsl:param name="min"/>
         <xsl:param name="max"/>
-        <table border="1">
+        <table>
             <tr>
                 <th>Titre</th>
                 <th>Année</th>
@@ -80,7 +81,7 @@
     <tr>
         <td><xsl:value-of select="titre"/></td>
         <td><xsl:value-of select="annee"/></td>
-        <td><xsl:value-of select="concat(prix/valeur, prix/valeur/@monnaie)"/></td>
+        <td><xsl:value-of select="concat(prix/valeur, ' ', prix/valeur/@monnaie)"/></td>
         <td>
         <xsl:variable name="input" select="/"/>
         <xsl:for-each select="tokenize(@auteurs, ' ')">
