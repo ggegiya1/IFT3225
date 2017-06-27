@@ -4,7 +4,31 @@
     exclude-result-prefixes="xs"
     xmlns:func="http://umontreal.ca/IFT3225/tp1"
     version="2.0">
+    <xsl:output method="xhtml" indent="yes"/>
+    
+    <!-- the price interval -->
+    <xsl:param name="min"/>
+    <xsl:param name="max"/>
+    
     <xsl:key name="auteur" match="auteur" use="@ident"/>
+    
+    <xsl:template match="/">
+        <html>
+            <head>
+                <meta charset="utf-8"></meta>
+            </head>
+            <body>                
+                <h1>Livres</h1>
+                <!-- show books -->
+                <xsl:call-template name="livres-template">
+                    <xsl:with-param name="min" select="$min"/>
+                    <xsl:with-param name="max" select="$max"/>
+                    
+                </xsl:call-template>
+            </body>
+        </html>
+    </xsl:template>  
+    
     <xsl:template name="livres-template">
         <xsl:param name="min"/>
         <xsl:param name="max"/>
@@ -13,14 +37,42 @@
                 <th>Titre</th>
                 <th>Année</th>
                 <th>Prix</th>
-                <th>Auteur</th>
+                <th>Auteurs</th>
             </tr>
+            <xsl:choose>
+                <!-- if both parametres are set, then filter the result -->
+                <xsl:when test="($min and $max)">
+                    <xsl:for-each select="/bibliotheque/livre[prix/valeur &lt;= $max and prix/valeur &gt;= $min]">
+                        <!-- use first author to sort books -->
+                        <xsl:sort select="func:author(.,/bibliotheque/auteur)" order="descending"/>
+                        <xsl:call-template name="livre"/>
+                    </xsl:for-each>
+                </xsl:when>
+                <xsl:when test="$min">
+                    <xsl:for-each select="/bibliotheque/livre[prix/valeur &gt;= $min]">
+                        <!-- use first author to sort books -->
+                        <xsl:sort select="func:author(.,/bibliotheque/auteur)" order="descending"/>
+                        <xsl:call-template name="livre"/>
+                    </xsl:for-each>
+                </xsl:when>
+                <xsl:when test="$max">
+                    <xsl:for-each select="/bibliotheque/livre[prix/valeur &lt;= $max]">
+                        <!-- use first author to sort books -->
+                        <xsl:sort select="func:author(.,/bibliotheque/auteur)" order="descending"/>
+                        <xsl:call-template name="livre"/>
+                    </xsl:for-each>
+                </xsl:when>
+                <!-- if no parameters set, return all the results -->
+                <xsl:otherwise>
+                    <xsl:for-each select="/bibliotheque/livre">
+                        <!-- use first author to sort books -->
+                        <xsl:sort select="func:author(.,/bibliotheque/auteur)" order="descending"/>
+                        <xsl:call-template name="livre"/>
+                    </xsl:for-each>
+                </xsl:otherwise>
+            </xsl:choose>
             <!-- select a book with the price in the given interval between min and max -->
-            <xsl:for-each select="/bibliotheque/livre[prix/valeur &lt;= $max and prix/valeur &gt;= $min]">
-                <!-- use first author to sort books -->
-                <xsl:sort select="func:author(.,/bibliotheque/auteur)" order="descending"/>
-                <xsl:call-template name="livre"/>
-            </xsl:for-each>
+            
         </table>    
     </xsl:template>
     
@@ -28,7 +80,7 @@
     <tr>
         <td><xsl:value-of select="titre"/></td>
         <td><xsl:value-of select="annee"/></td>
-        <td><xsl:value-of select="prix/valeur"/><xsl:value-of select="prix/value/@monnaie"/></td>
+        <td><xsl:value-of select="concat(prix/valeur, prix/valeur/@monnaie)"/></td>
         <td>
         <xsl:variable name="input" select="/"/>
         <xsl:for-each select="tokenize(@auteurs, ' ')">

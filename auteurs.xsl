@@ -1,4 +1,22 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+    <xsl:output method="xhtml" indent="yes"/>
+    <!-- show all the authors if the template called without parameters-->
+    <xsl:param name="auteur"/>
+    
+    <xsl:template match="/">
+        <html>
+            <head>
+                <meta charset="utf-8"></meta>
+            </head>
+            <body>
+                <h1>Auteurs</h1>
+                <!-- show authors -->
+                <xsl:call-template name="auteur-template">
+                    <xsl:with-param name="auteur" select="$auteur"/>
+                </xsl:call-template>
+            </body>
+        </html>
+    </xsl:template>     
    
     <xsl:template name="auteur-template">
         <xsl:param name="auteur"/>
@@ -31,7 +49,7 @@
                     <xsl:if test="$curr_aut=$curr_ref">
                         <tr>
                             <td><xsl:value-of select="$livre_node/titre"/></td>
-                            <td><xsl:value-of select="$livre_node/prix/valeur"/></td>
+                            <td><xsl:value-of select="concat($livre_node/prix/valeur, $livre_node/prix/valeur/@monnaie)"/></td>
                             <td><xsl:value-of select="$livre_node/annee"/></td>
                         </tr>
                     </xsl:if>
