@@ -3,25 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <title>2048</title>
+    <link rel="stylesheet" type="text/css" href="css/game.css">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> 
     <script src="js/game.js"></script>
-    <script type="text/javascript">
-        function start_game(form) {
-            var game = new Game(form.num_rows.value);
-            game.drawField();
-        }
-    </script></head>
+</head>
 <body>
 
+<div class="row">
+    <div class="col-sm-6">
+        <form>
+            <div class="form-group">
+                <label for="num_rows">Number of rows:</label>
+                <input type="text" class="form-control" id="num_rows" value="4"/>
+            </div>
+            <button id="start_btn" type="submit" class="btn btn-default">Start</button>
+        <form>
+    </div>
+</div>
 
-<form onsubmit="start_game(this);">
-    <label>
-        Number of rows:
-        <input type="text" name="num_rows" value="4">
-    </label>
-    <input type="submit" value="Start Game">
-</form>
-
-<div id="game_field"></div>
+<div class="row">
+    <div class="col-sm-4">
+        <div id="game_board"></div>
+    </div>
+</div>
 
 </body>
 </html>
