@@ -1,15 +1,12 @@
-var FORWARD = 1;
-
-function Game(){
-
+function GameBoard(){
 }
 
-Game.prototype.newRandomValue = function(){
+GameBoard.prototype.newRandomValue = function(){
     // assign 2 or 4
     return 2 * (Math.floor(Math.random() * 2) + 1);
 };
 
-Game.prototype.getAvailable = function(){
+GameBoard.prototype.getAvailable = function(){
     var available = [];
     for (var i=0; i < this.rows; i++){
         for (var j=0; j < this.rows; j++){
@@ -21,44 +18,36 @@ Game.prototype.getAvailable = function(){
     return available;
 };
 
-Game.prototype.draw = function(){
-    var table = $("<table></table>");
-    for (var i=0; i < this.rows; i++){
-        var row = $("<tr></tr>");
-        for (var j=0; j < this.rows; j++){
-            var cell = $("<td></td>");
-            this.board[i][j].toHtml(cell);
-            row.append(cell);
-        }
-        table.append(row);
-    }
-    $("#game_board").html(table);
+
+GameBoard.prototype.getTile = function(row, col){
+    return this.board[row][col];
 };
 
-Game.prototype.start = function(rows){
+GameBoard.prototype.start = function(rows){
     this.init(rows);
+    this.initView();
     this.addNewTile();
     this.addNewTile();
     this.draw();
 };
 
 
-Game.prototype.init = function(rows){
+GameBoard.prototype.init = function(rows){
     this.rows = rows;
     this.board = new Array(this.rows);
     console.log("window size: " + $(window).height());
     this.tileSize = Math.floor($(window).height() / parseInt(rows) / 2);
     console.log("tile size: " + this.tileSize);
-    for (var i=0; i<this.rows; i++){
-        var row = new Array(this.rows);
-        for (var j=0; j < this.rows; j++){
-            row[j] = new Tile(this.tileSize);
+    for (var row=0; row<this.rows; row++){
+        var rowVector = new Array(this.rows);
+        for (var col=0; col < this.rows; col++){
+            rowVector[col] = new Tile(row, col);
         }
-        this.board[i] = row;
+        this.board[row] = rowVector;
     }
 };
 
-Game.prototype.addNewTile = function(onError){
+GameBoard.prototype.addNewTile = function(onError){
     var available = this.getAvailable();
     if (available.length == 0 && onError){
         onError();
@@ -71,11 +60,11 @@ Game.prototype.addNewTile = function(onError){
     }
 };
 
-Game.prototype.row = function(idx){
+GameBoard.prototype.row = function(idx){
     return this.board[idx].slice();
 };
 
-Game.prototype.column = function(idx){
+GameBoard.prototype.column = function(idx){
     var column = new Array(this.rows);
     for (var i=0; i<this.rows; i++){
         column[i] = this.board[i][idx];
@@ -83,14 +72,14 @@ Game.prototype.column = function(idx){
     return column;
 };
 
-Game.prototype.moveLeft = function(){
+GameBoard.prototype.moveLeft = function(){
     console.log("moving left");
     for(var i=0; i < this.rows; i++){
         this.traverse(this.row(i));
     }
 };
 
-Game.prototype.moveRight = function(){
+GameBoard.prototype.moveRight = function(){
     console.log("moving right");
     for(var i=0; i < this.rows; i++){
         var cur = this.row(i);
@@ -99,14 +88,14 @@ Game.prototype.moveRight = function(){
     }
 };
 
-Game.prototype.moveUp = function(){
+GameBoard.prototype.moveUp = function(){
     console.log("moving up");
     for(var i=0; i < this.rows; i++){
         this.traverse(this.column(i));
     }
 };
 
-Game.prototype.moveDown = function(){
+GameBoard.prototype.moveDown = function(){
     console.log("moving down");
     for(var i=0; i < this.rows; i++){
         var cur = this.column(i);
@@ -115,7 +104,7 @@ Game.prototype.moveDown = function(){
     }
 };
 
-Game.prototype.traverse = function(vector){
+GameBoard.prototype.traverse = function(vector){
     for (var i=0; i<this.rows; i++){
         if (vector[i].isEmpty()){
             continue;
@@ -125,60 +114,48 @@ Game.prototype.traverse = function(vector){
         while(posCurrent > 0){
             var tileCurrent = vector[posCurrent];
             var tilePrev = vector[--posCurrent];
-            if (tilePrev.merged){
+            // allow only one merge
+            if (tilePrev.merged || tileCurrent.merged){
                 break;
             }
             if (tilePrev.value == tileCurrent.value){
-                tilePrev.value += tileCurrent.value;
-                tilePrev.merged = true;
-                tileCurrent.setEmpty();
+                tilePrev.mergeTile(tileCurrent);
+                // re-draw only the modified tiles
+                tilePrev.draw();
+                tileCurrent.draw();
             }
             if (tilePrev.isEmpty()){
-                tilePrev.value = tileCurrent.value;
-                tileCurrent.setEmpty();
+                tilePrev.setTile(tileCurrent);
+                // re-draw only the modified tiles
+                tilePrev.draw();
+                tileCurrent.draw();
             }
-            this.draw();
         }
     }
 };
 
-$(document).ready(function(){
-    var game = new Game();
-    $("#start_btn").click(function(){
-        var rows = $("#num_rows").val();
-        if (rows > 1){
-            game.start(rows);
-        }else{
-            alert("Please enter number of rows > 1")
+
+GameBoard.prototype.initView = function(){
+    var table = $("<table></table>");
+    for (var row=0; row < this.rows; row++){
+        var tr = $("<tr></tr>");
+        for (var col=0; col < this.rows; col++){
+            var tileId = "tile-col" + col + "-row" + row;
+            var td = $("<td></td>").attr("id", tileId).attr("style",
+                "width: " + this.tileSize + "px !important; " +
+                "height: " + this.tileSize + "px !important;");
+            tr.append(td);
         }
-        return false;
-    });
-    $(document).keydown(function(e) {
-        switch(e.which) {
-            case 37: // left
-                game.moveLeft();
-                break;
+        table.append(tr);
+    }
+    $("#game_board").html(table);
+};
 
-            case 38: // up
-                game.moveUp();
-                break;
-
-            case 39: // right
-                game.moveRight();
-                break;
-
-            case 40: // down
-                game.moveDown();
-                break;
-
-            default: return; // exit this handler for other keys
+GameBoard.prototype.draw = function(){
+    for (var row=0; row < this.rows; row++){
+        for (var col=0; col < this.rows; col++){
+            var tile = this.getTile(row, col);
+            tile.draw();
         }
-        e.preventDefault(); // prevent the default action (scroll / move caret)
-        game.addNewTile(function(){
-            var replay = confirm("Game Over\nPress OK to play again");
-            if (replay){
-                game.start($("#num_rows").val());
-            }
-        })
-    });
-});
+    }
+};
