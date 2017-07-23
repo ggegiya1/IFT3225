@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
     <title>2048</title>
 
     <link rel="stylesheet" href="css/bootstrap.min.css">
@@ -15,29 +15,66 @@
 </head>
 <body>
 
-<div class="jumbotron text-center">
-    <h1>2048</h1>
-    <p>Number of rows</p>
-    <form class="form-inline">
-        <div class="input-group">
-            <input id="num_rows" type="text" class="form-control" size="30" value="4" required>
-            <div class="input-group-btn">
-                <button id="start_btn" type="button" class="btn btn-danger">Start Game</button>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-2">
+            <h1>2048</h1>
+            <p>Number of rows</p>
+            <form class="form-inline">
+                <div class="input-group">
+                    <input id="num_rows" type="text" class="form-control" size="30" value="4" required>
+                    <div class="input-group-btn">
+                        <button id="start_btn" type="button" class="btn btn-danger">Start Game</button>
+                    </div>
+                </div>
+            </form>
+            <div id="wrong_num_alert" class="alert alert-danger alert-dismissable hidden">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                <strong>Wrong number!</strong> Please enter a number > 1
             </div>
         </div>
-    </form>
-</div>
-
-
-
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-lg-12">
-            <div id="game_board" class="center-block"></div>
+        <div class="col-sm-10">
+            <div id="game_board"></div>
         </div>
     </div>
 </div>
 
+
+<div class="modal fade" id="game_lost" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title text-center">Game Over!</h4>
+            </div>
+            <div class="modal-body text-center">
+                <p>Press OK to play again</p>
+            </div>
+            <div class="modal-footer">
+                <button id="replay_lost" type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="game_win" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title text-center">Congratulations! You have won!</h4>
+            </div>
+            <div class="modal-body text-center">
+                <p>Press OK to play again</p>
+            </div>
+            <div class="modal-footer">
+                <button id="replay_win" type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>

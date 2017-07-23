@@ -3,7 +3,6 @@ function Tile(row, col){
     this.row = row;
     this.value = 0;
     this.merged = false;
-    this.new = true;
 }
 
 Tile.prototype.isEmpty = function(){
@@ -27,11 +26,7 @@ Tile.prototype.setTile = function(tile){
     tile.setEmpty();
 };
 
-
 Tile.prototype.draw = function(){
     var tileId = "#tile-col" + this.col + "-row" + this.row;
-    var tileHtml = $("<div></div>").append(this.value)
-        .addClass("tile")
-        .addClass("tile-" + this.value);
-    $(tileId).html(tileHtml);
+    $(tileId).text(this.value).removeClass().addClass("tile-" + this.value);
 };

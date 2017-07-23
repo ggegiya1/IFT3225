@@ -1,40 +1,79 @@
+function GameController(){
+    this.newGame(4); // default game
+}
+
+GameController.prototype.move = function(keyCode){
+    if (this.gameBoard.finished) return;
+    switch(keyCode) {
+        case 37: // left
+            this.gameBoard.moveLeft();
+            break;
+
+        case 38: // up
+            this.gameBoard.moveUp();
+            break;
+
+        case 39: // right
+            this.gameBoard.moveRight();
+            break;
+
+        case 40: // down
+            this.gameBoard.moveDown();
+            break;
+
+        default: return; // exit this handler for other keys
+    }
+    // prevent adding new tile if the board remains unchanged
+    if (this.gameBoard.changed){
+        this.gameBoard.addNewTile();
+    }else {
+        if (this.gameBoard.isFull()){
+            this.onGameLostListener();
+        }
+    }
+};
+
+GameController.prototype.newGame = function(rows){
+    this.gameBoard = new GameBoard(rows, 2048, this.onGameLostListener, this.onGameWinListener);
+    this.gameBoard.initView();
+    this.gameBoard.addNewTile();
+    this.gameBoard.addNewTile();
+    this.gameBoard.draw();
+};
+
+GameController.prototype.onGameLostListener = function(){
+    $("#game_lost").modal();
+};
+
+GameController.prototype.onGameWinListener = function(){
+    $("#game_win").modal();
+};
+
 $(document).ready(function(){
-    var game = new GameBoard();
+    var game = new GameController();
+    $(document).keydown(
+        function(e){
+            game.move(e.keyCode);
+        }
+    );
+
     $("#start_btn").click(function(){
         var rows = $("#num_rows").val();
         if (rows > 1){
-            game.start(rows);
+            $("#wrong_num_alert").addClass("hidden");
+            game.newGame(rows);
         }else{
-            alert("Please enter number of rows > 1")
+            $("#wrong_num_alert").removeClass("hidden");
         }
         return false;
     });
-    $(document).keydown(function(e) {
-        switch(e.which) {
-            case 37: // left
-                game.moveLeft();
-                break;
 
-            case 38: // up
-                game.moveUp();
-                break;
-
-            case 39: // right
-                game.moveRight();
-                break;
-
-            case 40: // down
-                game.moveDown();
-                break;
-
-            default: return; // exit this handler for other keys
-        }
-        e.preventDefault(); // prevent the default action (scroll / move caret)
-        game.addNewTile(function(){
-            var replay = confirm("Game Over\nPress OK to play again");
-            if (replay){
-                game.start($("#num_rows").val());
-            }
-        })
+    $("#replay_win").click(function(){
+        game.newGame($("#num_rows").val());
     });
+
+    $("#replay_lost").click(function(){
+        game.newGame($("#num_rows").val());
+    });
+
 });

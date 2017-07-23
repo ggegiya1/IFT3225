@@ -1,4 +1,10 @@
-function GameBoard(){
+function GameBoard(rows, max, onGameLostListener, onGameWinListener){
+    this.init(rows);
+    this.onGameLostListener = onGameLostListener;
+    this.onGameWinListener = onGameWinListener;
+    this.max = max;
+    this.changed = false;
+    this.finished = false;
 }
 
 GameBoard.prototype.newRandomValue = function(){
@@ -18,26 +24,23 @@ GameBoard.prototype.getAvailable = function(){
     return available;
 };
 
+GameBoard.prototype.isFull = function(){
+    return this.getAvailable().length == 0;
+};
+
 
 GameBoard.prototype.getTile = function(row, col){
     return this.board[row][col];
 };
 
-GameBoard.prototype.start = function(rows){
-    this.init(rows);
-    this.initView();
-    this.addNewTile();
-    this.addNewTile();
-    this.draw();
-};
-
 
 GameBoard.prototype.init = function(rows){
+    this.finished = false;
     this.rows = rows;
     this.board = new Array(this.rows);
-    console.log("window size: " + $(window).height());
-    this.tileSize = Math.floor($(window).height() / parseInt(rows) / 2);
-    console.log("tile size: " + this.tileSize);
+    // calculate tile size dynamically based on the window size
+    this.tileSize = Math.floor($(window).height() / parseInt(rows) / 1.5);
+    // populate the 2 dimensional table with empty tiles
     for (var row=0; row<this.rows; row++){
         var rowVector = new Array(this.rows);
         for (var col=0; col < this.rows; col++){
@@ -47,16 +50,17 @@ GameBoard.prototype.init = function(rows){
     }
 };
 
-GameBoard.prototype.addNewTile = function(onError){
+GameBoard.prototype.addNewTile = function(){
     var available = this.getAvailable();
-    if (available.length == 0 && onError){
-        onError();
+    if (available.length == 0){
+        this.onGameLostListener();
     }else{
         // pick randomly one free position
         var idx = Math.floor(Math.random() * available.length);
         var pos = available[idx];
-        this.board[pos[0]][pos[1]].value =  this.newRandomValue();
-        this.draw();
+        var tile = this.board[pos[0]][pos[1]];
+        tile.value = this.newRandomValue();
+        tile.draw();
     }
 };
 
@@ -73,14 +77,14 @@ GameBoard.prototype.column = function(idx){
 };
 
 GameBoard.prototype.moveLeft = function(){
-    console.log("moving left");
+    this.changed = false;
     for(var i=0; i < this.rows; i++){
         this.traverse(this.row(i));
     }
 };
 
 GameBoard.prototype.moveRight = function(){
-    console.log("moving right");
+    this.changed = false;
     for(var i=0; i < this.rows; i++){
         var cur = this.row(i);
         cur.reverse();
@@ -89,14 +93,14 @@ GameBoard.prototype.moveRight = function(){
 };
 
 GameBoard.prototype.moveUp = function(){
-    console.log("moving up");
+    this.changed = false;
     for(var i=0; i < this.rows; i++){
         this.traverse(this.column(i));
     }
 };
 
 GameBoard.prototype.moveDown = function(){
-    console.log("moving down");
+    this.changed = false;
     for(var i=0; i < this.rows; i++){
         var cur = this.column(i);
         cur.reverse();
@@ -118,28 +122,46 @@ GameBoard.prototype.traverse = function(vector){
             if (tilePrev.merged || tileCurrent.merged){
                 break;
             }
+            // merge two tiles with same value
             if (tilePrev.value == tileCurrent.value){
-                tilePrev.mergeTile(tileCurrent);
-                // re-draw only the modified tiles
-                tilePrev.draw();
-                tileCurrent.draw();
+                this.merge(tilePrev, tileCurrent);
+                this.changed = true;
             }
+            // move tile to the empty neighbour place
             if (tilePrev.isEmpty()){
-                tilePrev.setTile(tileCurrent);
-                // re-draw only the modified tiles
-                tilePrev.draw();
-                tileCurrent.draw();
+                this.move(tilePrev, tileCurrent);
+                this.changed = true;
             }
         }
     }
 };
 
 
+GameBoard.prototype.merge = function(tilePrev, tileCurrent){
+    tilePrev.mergeTile(tileCurrent);
+    // re-draw only the modified tiles
+    tilePrev.draw();
+    tileCurrent.draw();
+    // check if the max value (2048) is reached
+    if (tilePrev.value == this.max){
+        this.finished = true;
+        this.onGameWinListener();
+    }
+};
+
+GameBoard.prototype.move = function(tilePrev, tileCurrent){
+    tilePrev.setTile(tileCurrent);
+    // re-draw only the modified tiles
+    tilePrev.draw();
+    tileCurrent.draw();
+};
+
 GameBoard.prototype.initView = function(){
     var table = $("<table></table>");
     for (var row=0; row < this.rows; row++){
         var tr = $("<tr></tr>");
         for (var col=0; col < this.rows; col++){
+            // set an id to the cell to bind with Tile object
             var tileId = "tile-col" + col + "-row" + row;
             var td = $("<td></td>").attr("id", tileId).attr("style",
                 "width: " + this.tileSize + "px !important; " +
@@ -152,6 +174,7 @@ GameBoard.prototype.initView = function(){
 };
 
 GameBoard.prototype.draw = function(){
+    // redraw all the tiles
     for (var row=0; row < this.rows; row++){
         for (var col=0; col < this.rows; col++){
             var tile = this.getTile(row, col);
