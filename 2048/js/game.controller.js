@@ -43,6 +43,7 @@ GameController.prototype.newGame = function(rows){
     this.gameBoard.addNewTile();
     this.gameBoard.draw();
     this.moves = 0;
+    this.updateMoves();
 };
 
 GameController.prototype.onGameLostListener = function(){
