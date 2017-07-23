@@ -137,6 +137,27 @@ GameBoard.prototype.traverse = function(vector){
 };
 
 
+GameBoard.prototype.hasSolutionVector = function(vector){
+      for(var i=1; i<vector.length; i++){
+          var tileCurrent = vector[i];
+          var tilePrev = vector[i-1];
+          if (!tileCurrent.isEmpty() && tileCurrent.value == tilePrev.value){
+              return true;
+          }
+      }
+    return false;
+};
+
+GameBoard.prototype.hasSolution = function(){
+    for (var i=0; i<this.rows; i++){
+        if (this.hasSolutionVector(this.column(i)) || this.hasSolutionVector(this.row(i))){
+            return true;
+        }
+    }
+    return false;
+};
+
+
 GameBoard.prototype.merge = function(tilePrev, tileCurrent){
     tilePrev.mergeTile(tileCurrent);
     // re-draw only the modified tiles

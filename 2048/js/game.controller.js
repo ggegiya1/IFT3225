@@ -25,9 +25,12 @@ GameController.prototype.move = function(keyCode){
     }
     // prevent adding new tile if the board remains unchanged
     if (this.gameBoard.changed){
+        this.moves++;
         this.gameBoard.addNewTile();
+        this.updateMoves();
     }else {
-        if (this.gameBoard.isFull()){
+        if (this.gameBoard.isFull() && !this.gameBoard.hasSolution()){
+            this.gameBoard.finished = true;
             this.onGameLostListener();
         }
     }
@@ -39,6 +42,7 @@ GameController.prototype.newGame = function(rows){
     this.gameBoard.addNewTile();
     this.gameBoard.addNewTile();
     this.gameBoard.draw();
+    this.moves = 0;
 };
 
 GameController.prototype.onGameLostListener = function(){
@@ -47,6 +51,11 @@ GameController.prototype.onGameLostListener = function(){
 
 GameController.prototype.onGameWinListener = function(){
     $("#game_win").modal();
+};
+
+
+GameController.prototype.updateMoves = function(){
+    $("#moves_count").text("" + this.moves);
 };
 
 $(document).ready(function(){
