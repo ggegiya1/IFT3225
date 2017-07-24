@@ -28,5 +28,5 @@ Tile.prototype.setTile = function(tile){
 
 Tile.prototype.draw = function(){
     var tileId = "#tile-col" + this.col + "-row" + this.row;
-    $(tileId).text(this.value).removeClass().addClass("tile-" + this.value);
+    $(tileId).text(this.value == 0?"": this.value).removeClass().addClass("tile-" + this.value);
 };
