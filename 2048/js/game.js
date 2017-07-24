@@ -1,10 +1,12 @@
-function GameBoard(rows, max, onGameLostCallback, onGameWinCallback){
+function GameBoard(rows, max, onGameLostCallback, onGameWinCallback, onScoreUpdatedCallback){
     this.init(rows);
     this.onGameLostCallback = onGameLostCallback;
     this.onGameWinCallback = onGameWinCallback;
+    this.onScoreUpdatedCallback = onScoreUpdatedCallback;
     this.max = max;
     this.changed = false;
     this.finished = false;
+    this.score = 0;
 }
 
 GameBoard.prototype.newRandomValue = function(){
@@ -40,9 +42,9 @@ GameBoard.prototype.init = function(rows){
     this.board = new Array(this.rows);
     // calculate tile size dynamically based on the window size
     // the coefficient are chosen empirically for the best view
-    this.tileSize = Math.floor($(window).width() / parseInt(rows) / 2.5);
+    this.tileSize = Math.floor($(window).width() / parseInt(rows)/ 3);
     this.fontSize = Math.floor(this.tileSize / 3);
-    this.borderSize = Math.floor(this.tileSize / 16);
+    this.borderSize = Math.floor(this.tileSize / 15);
     // populate the 2 dimensional table with empty tiles
     for (var row=0; row<this.rows; row++){
         var rowVector = new Array(this.rows);
@@ -168,6 +170,8 @@ GameBoard.prototype.hasSolution = function(){
 
 GameBoard.prototype.merge = function(tilePrev, tileCurrent){
     tilePrev.mergeTile(tileCurrent);
+    this.score += tilePrev.value;
+    this.onScoreUpdatedCallback(this.score);
     // re-draw only the modified tiles
     tilePrev.draw();
     tileCurrent.draw();

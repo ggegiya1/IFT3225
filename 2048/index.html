@@ -16,10 +16,10 @@
 <body>
 
 
-<div class="container">
+<div class="container-fluid">
     <div class="row">
-        <div class="col-sm-1"></div>
-        <div class="col-sm-2">
+        <div class="col-lg-2"></div>
+        <div class="col-lg-2">
             <h1>2048</h1>
             <p>Number of rows</p>
             <form class="form-inline">
@@ -32,16 +32,18 @@
             </form>
             <h3>Moves</h3>
             <h3 id="moves_count">0</h3>
+            <h3>Score</h3>
+            <h3 id="score_count">0</h3>
             <div id="wrong_num_alert" class="alert alert-danger alert-dismissable hidden">
                 <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
                 <strong>Wrong number!</strong> Please enter a number > 1
             </div>
         </div>
-        <div class="col-sm-1"></div>
-        <div class="col-sm-6">
-            <table class="table" id="game_board"></table>
+        <div class="col-lg-1"></div>
+        <div class="col-lg-6">
+            <table  id="game_board"></table>
         </div>
-        <div class="col-sm-2"></div>
+        <div class="col-lg-1"></div>
     </div>
 </div>
 

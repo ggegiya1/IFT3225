@@ -27,18 +27,18 @@ GameController.prototype.move = function(keyCode){
     if (this.gameBoard.changed){
         this.moves++;
         this.gameBoard.addNewTile();
-        this.updateMoves();
+        this.updateStats();
     }
 };
 
 GameController.prototype.newGame = function(rows){
-    this.gameBoard = new GameBoard(rows, 2048, this.onGameLostCallback, this.onGameWinCallback);
+    this.gameBoard = new GameBoard(rows, 2048, this.onGameLostCallback, this.onGameWinCallback, this.onScoreUpdated);
     this.gameBoard.initView();
     this.gameBoard.addNewTile();
     this.gameBoard.addNewTile();
     this.gameBoard.draw();
     this.moves = 0;
-    this.updateMoves();
+    this.updateStats();
 };
 
 GameController.prototype.onGameLostCallback = function(){
@@ -50,8 +50,13 @@ GameController.prototype.onGameWinCallback = function(){
 };
 
 
-GameController.prototype.updateMoves = function(){
+GameController.prototype.updateStats = function(){
     $("#moves_count").text("" + this.moves);
+    $("#score_count").text("" + this.gameBoard.score);
+};
+
+GameController.prototype.onScoreUpdated = function(score){
+    $("#score_count").text("" + score);
 };
 
 $(document).ready(function(){
