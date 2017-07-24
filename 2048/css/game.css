@@ -1,5 +1,5 @@
 body {
-    margin: 80px 0; }
+    margin: 40px 0; }
 
 .heading:after {
     content: "";
@@ -7,12 +7,11 @@ body {
     clear: both; }
 
 table tr td{
-    border: 6px solid #8c8c8c;
+    border: solid #8c8c8c;
     color: #f9f6f2;
     background: #f9f6f2;
     font-weight: bold;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: xx-large;
     text-align: center;
 }
 

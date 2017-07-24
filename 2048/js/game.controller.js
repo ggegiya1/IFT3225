@@ -28,16 +28,11 @@ GameController.prototype.move = function(keyCode){
         this.moves++;
         this.gameBoard.addNewTile();
         this.updateMoves();
-    }else {
-        if (this.gameBoard.isFull() && !this.gameBoard.hasSolution()){
-            this.gameBoard.finished = true;
-            this.onGameLostListener();
-        }
     }
 };
 
 GameController.prototype.newGame = function(rows){
-    this.gameBoard = new GameBoard(rows, 2048, this.onGameLostListener, this.onGameWinListener);
+    this.gameBoard = new GameBoard(rows, 2048, this.onGameLostCallback, this.onGameWinCallback);
     this.gameBoard.initView();
     this.gameBoard.addNewTile();
     this.gameBoard.addNewTile();
@@ -46,11 +41,11 @@ GameController.prototype.newGame = function(rows){
     this.updateMoves();
 };
 
-GameController.prototype.onGameLostListener = function(){
+GameController.prototype.onGameLostCallback = function(){
     $("#game_lost").modal();
 };
 
-GameController.prototype.onGameWinListener = function(){
+GameController.prototype.onGameWinCallback = function(){
     $("#game_win").modal();
 };
 

@@ -1,7 +1,7 @@
-function GameBoard(rows, max, onGameLostListener, onGameWinListener){
+function GameBoard(rows, max, onGameLostCallback, onGameWinCallback){
     this.init(rows);
-    this.onGameLostListener = onGameLostListener;
-    this.onGameWinListener = onGameWinListener;
+    this.onGameLostCallback = onGameLostCallback;
+    this.onGameWinCallback = onGameWinCallback;
     this.max = max;
     this.changed = false;
     this.finished = false;
@@ -39,7 +39,10 @@ GameBoard.prototype.init = function(rows){
     this.rows = rows;
     this.board = new Array(this.rows);
     // calculate tile size dynamically based on the window size
-    this.tileSize = Math.floor($(window).height() / parseInt(rows) / 1.5);
+    // the coefficient are chosen empirically for the best view
+    this.tileSize = Math.floor($(window).width() / parseInt(rows) / 2.5);
+    this.fontSize = Math.floor(this.tileSize / 3);
+    this.borderSize = Math.floor(this.tileSize / 16);
     // populate the 2 dimensional table with empty tiles
     for (var row=0; row<this.rows; row++){
         var rowVector = new Array(this.rows);
@@ -51,16 +54,18 @@ GameBoard.prototype.init = function(rows){
 };
 
 GameBoard.prototype.addNewTile = function(){
-    var available = this.getAvailable();
-    if (available.length == 0){
-        this.onGameLostListener();
-    }else{
+    if (!this.isFull()){
         // pick randomly one free position
-        var idx = Math.floor(Math.random() * available.length);
-        var pos = available[idx];
+        var idx = Math.floor(Math.random() * this.getAvailable().length);
+        var pos = this.getAvailable()[idx];
         var tile = this.board[pos[0]][pos[1]];
         tile.value = this.newRandomValue();
         tile.draw();
+    }
+    // if no solution exists after adding the new tile, finish the game and signal to the controller
+    if (!this.hasSolution()){
+        this.finished = true;
+        this.onGameLostCallback();
     }
 };
 
@@ -149,6 +154,9 @@ GameBoard.prototype.hasSolutionVector = function(vector){
 };
 
 GameBoard.prototype.hasSolution = function(){
+    if (!this.isFull()){
+        return true;
+    }
     for (var i=0; i<this.rows; i++){
         if (this.hasSolutionVector(this.column(i)) || this.hasSolutionVector(this.row(i))){
             return true;
@@ -163,10 +171,10 @@ GameBoard.prototype.merge = function(tilePrev, tileCurrent){
     // re-draw only the modified tiles
     tilePrev.draw();
     tileCurrent.draw();
-    // check if the max value (2048) is reached
+    // check if the max value (2048) is reached and send signal to the controller
     if (tilePrev.value == this.max){
         this.finished = true;
-        this.onGameWinListener();
+        this.onGameWinCallback();
     }
 };
 
@@ -178,20 +186,26 @@ GameBoard.prototype.move = function(tilePrev, tileCurrent){
 };
 
 GameBoard.prototype.initView = function(){
-    var table = $("<table></table>");
+    var table = $("#game_board");
+    // remove old content
+    table.empty();
+    //table.css("border-width", this.borderSize + "px !important");
     for (var row=0; row < this.rows; row++){
         var tr = $("<tr></tr>");
         for (var col=0; col < this.rows; col++){
+            // create a cell for each tile
             // set an id to the cell to bind with Tile object
             var tileId = "tile-col" + col + "-row" + row;
-            var td = $("<td></td>").attr("id", tileId).attr("style",
-                "width: " + this.tileSize + "px !important; " +
-                "height: " + this.tileSize + "px !important;");
+            var td = $("<td></td>")
+                .attr("id", tileId)
+                .css("width", this.tileSize + "px")
+                .css("height", this.tileSize + "px")
+                .css("font-size", this.fontSize + "px")
+                .css("border-width", this.borderSize + "px");
             tr.append(td);
         }
         table.append(tr);
     }
-    $("#game_board").html(table);
 };
 
 GameBoard.prototype.draw = function(){
