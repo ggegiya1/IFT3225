@@ -15,73 +15,65 @@
 </head>
 <body>
 
-
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-lg-2"></div>
-        <div class="col-lg-2">
+    <div class="row text-center">
+        <div class="col-sm-4">
             <h1>2048</h1>
-            <p>Number of rows</p>
+            <h4>Number of rows</h4>
             <form class="form-inline">
                 <div class="input-group">
-                    <input id="num_rows" type="text" class="form-control" size="30" value="4" required>
+                    <input id="num_rows" type="text" class="form-control" value="4" required>
                     <div class="input-group-btn">
-                        <button id="start_btn" type="button" class="btn btn-danger">Start Game</button>
+                        <button id="start_btn" type="button" class="btn btn-warning">Start Game</button>
                     </div>
                 </div>
             </form>
-            <h3>Moves</h3>
-            <h3 id="moves_count">0</h3>
-            <h3>Score</h3>
-            <h3 id="score_count">0</h3>
             <div id="wrong_num_alert" class="alert alert-danger alert-dismissable hidden">
                 <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
                 <strong>Wrong number!</strong> Please enter a number > 1
             </div>
+            <h3>Moves <span id="moves_count" class="label label-default">0</span></h3>
+            <h3>Score <span id="score_count" class="label label-default">0</span></h3>
         </div>
-        <div class="col-lg-1"></div>
-        <div class="col-lg-6">
-            <table  id="game_board"></table>
-        </div>
-        <div class="col-lg-1"></div>
-    </div>
-</div>
-
-
-<div class="modal fade" id="game_lost" role="dialog">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title text-center">Game Over!</h4>
-            </div>
-            <div class="modal-body text-center">
-                <p>Press OK to play again</p>
-            </div>
-            <div class="modal-footer">
-                <button id="replay_lost" type="button" class="btn btn-default" data-dismiss="modal">OK</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-            </div>
+        <div class="col-sm-7">
+            <table id="game_board"></table>
         </div>
     </div>
-</div>
 
-
-<div class="modal fade" id="game_win" role="dialog">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title text-center">Congratulations! You have won!</h4>
-            </div>
-            <div class="modal-body text-center">
-                <p>Press OK to play again</p>
-            </div>
-            <div class="modal-footer">
-                <button id="replay_win" type="button" class="btn btn-default" data-dismiss="modal">OK</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+    <div class="modal fade" id="game_lost" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title text-center">Game Over!</h4>
+                </div>
+                <div class="modal-body text-center">
+                    <p>Press OK to play again</p>
+                </div>
+                <div class="modal-footer">
+                    <button id="replay_lost" type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-</body>
+    <div class="modal fade" id="game_win" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title text-center">Congratulations! You have won!</h4>
+                </div>
+                <div class="modal-body text-center">
+                    <p>Press OK to play again</p>
+                </div>
+                <div class="modal-footer">
+                    <button id="replay_win" type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </body>
 </html>
